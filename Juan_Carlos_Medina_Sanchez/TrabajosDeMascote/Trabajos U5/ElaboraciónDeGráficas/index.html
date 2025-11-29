@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Panel de Gráficas - Renta de Autos</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        body {
+            background: #0f172a;
+            color: #e5e7eb;
+            min-height: 100vh;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 1rem 1rem;
+        }
+
+        header h1 {
+            font-size: 1.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: #9ca3af;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem 3rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            grid-gap: 1.5rem;
+        }
+
+        .card {
+            background: #111827;
+            border-radius: 1rem;
+            padding: 1.2rem 1.4rem;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.35);
+            border: 1px solid #1f2937;
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            color: #9ca3af;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 260px;
+        }
+
+        footer {
+            text-align: center;
+            padding-bottom: 1.5rem;
+            color: #6b7280;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Panel de Gráficas – Sistema de Renta de Autos</h1>
+    </header>
+
+    <main class="container">
+        <!-- Gráfica 1: Barras -->
+        <section class="card">
+            <h2>Rentas por categoría de vehículo</h2>
+            <p>
+                Esta gráfica muestra cuántas rentas se han realizado por cada categoría
+                de vehículo disponible en la empresa: Sedán, SUV y Pickup.
+            </p>
+            <div class="chart-wrapper">
+                <canvas id="barChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Gráfica 2: Línea -->
+        <section class="card">
+            <h2>Rentas mensuales</h2>
+            <p>
+                La gráfica de líneas muestra la cantidad de rentas realizadas
+                en los últimos meses, permitiendo observar la tendencia.
+            </p>
+            <div class="chart-wrapper">
+                <canvas id="lineChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Gráfica 3: Pastel -->
+        <section class="card">
+            <h2>Distribución de métodos de pago</h2>
+            <p>
+                La gráfica de pastel representa el porcentaje de rentas que se pagan
+                en efectivo, con tarjeta o por transferencia.
+            </p>
+            <div class="chart-wrapper">
+                <canvas id="pieChart"></canvas>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        Proyecto de ejemplo – Visualización de información para extracción de conocimiento
+    </footer>
+
+    <script>
+        // Datos de ejemplo para el sistema de renta de autos
+        // 1) Rentas por categoría
+        const categorias = ["Sedán", "SUV", "Pickup"];
+        const rentasPorCategoria = [45, 62, 28];
+
+        // 2) Rentas por mes
+        const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun"];
+        const rentasMensuales = [20, 30, 25, 40, 50, 55];
+
+        // 3) Métodos de pago
+        const metodosPago = ["Efectivo", "Tarjeta", "Transferencia"];
+        const distribucionPago = [25, 60, 15]; // porcentajes
+
+        // Colores base
+        const coloresBarra = ["#38bdf8", "#a855f7", "#f97316"];
+        const coloresPastel = ["#22c55e", "#3b82f6", "#eab308"];
+
+        // Gráfica de barras
+        const ctxBar = document.getElementById("barChart").getContext("2d");
+        new Chart(ctxBar, {
+            type: "bar",
+            data: {
+                labels: categorias,
+                datasets: [
+                    {
+                        label: "Número de rentas",
+                        data: rentasPorCategoria,
+                        backgroundColor: coloresBarra,
+                        borderRadius: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return ` ${context.parsed.y} rentas`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: "#e5e7eb"
+                        },
+                        grid: {
+                            color: "#1f2937"
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: "#e5e7eb"
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfica de líneas
+        const ctxLine = document.getElementById("lineChart").getContext("2d");
+        new Chart(ctxLine, {
+            type: "line",
+            data: {
+                labels: meses,
+                datasets: [
+                    {
+                        label: "Rentas por mes",
+                        data: rentasMensuales,
+                        fill: false,
+                        borderColor: "#38bdf8",
+                        borderWidth: 2,
+                        tension: 0.3,
+                        pointBackgroundColor: "#e5e7eb",
+                        pointRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return ` ${context.parsed.y} rentas`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: "#e5e7eb"
+                        },
+                        grid: {
+                            color: "#1f2937"
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: "#e5e7eb"
+                        },
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Gráfica de pastel
+        const ctxPie = document.getElementById("pieChart").getContext("2d");
+        new Chart(ctxPie, {
+            type: "pie",
+            data: {
+                labels: metodosPago,
+                datasets: [
+                    {
+                        data: distribucionPago,
+                        backgroundColor: coloresPastel,
+                        hoverOffset: 8
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: {
+                            color: "#e5e7eb"
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                const label = context.label || "";
+                                const value = context.parsed;
+                                return ` ${label}: ${value}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
