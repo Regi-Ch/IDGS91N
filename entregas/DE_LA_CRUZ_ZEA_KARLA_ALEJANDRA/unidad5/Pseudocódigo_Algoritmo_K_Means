@@ -1,0 +1,11 @@
+INICIAR proceso K-Means
+    Cargar datos
+    Definir número de clusters k
+    Inicializar centroides aleatoriamente
+
+    REPETIR hasta convergencia:
+        1. Asignar cada punto al centroide más cercano
+        2. Recalcular centroides
+
+    Generar etiquetas y visualización
+FIN
